@@ -1,0 +1,114 @@
+//TRAITS AND POLICIES C++
+//Utrecht_univ
+#include <iostream>
+template <typename T>
+class AccumulationTraits;
+
+template <>
+class AccumulationTraits <char> {
+public:
+typedef int AccT;
+static AccT const zero() {return 0;}};
+
+template <>
+class AccumulationTraits <short> {
+public:
+	typedef int AccT;
+	static AccT const zero() {return 0;}};
+
+template <>
+class AccumulationTraits <float> {
+public :
+	typedef double AccT;
+	static AccT const zero() {return 0;}};
+
+// VERSI EBOOK (1)
+//class SumPolicy{
+//public:
+//	template <typename T1, typename T2>
+//	static void accumulate(T1 &total, T2 const& beg)
+//	{total+= beg;}};
+
+// VERSI EBOOK (1)
+//template <typename T, typename Policy = SumPolicy, typename Traits = AccumulationTraits<T>>
+//class Accum
+//{
+//public:
+//	typedef typename Traits::AccT AccT;
+//	static AccT accum (T * beg, const T* end)
+//	{
+//	AccT total = Traits::zero();
+//	while (*beg != *end){
+//		Policy::accumulate(total, *beg);
+//		++(*beg);}
+//	return total;
+//	}
+//};
+
+// VERSI 2
+//template<typename T, typename Traits = AccumulationTraits<T>>
+//class SumPolicy{
+//public:
+//	typedef typename Traits::AccT AccT;
+//	static AccT accumulate(AccT &total, T const& beg)
+//	{return total+= beg;}};
+//
+//// VERSI 2
+//template <typename T, typename Policy = SumPolicy<T, AccumulationTraits<T>>, typename Traits = AccumulationTraits<T>>
+//class Accum
+//{
+//public:
+//	typedef typename Traits::AccT AccT;
+//	static AccT accum (T * beg, const T* end)
+//	{
+//	AccT total = Traits::zero();
+//	while (*beg != *end){
+//		Policy::accumulate(total, *beg);
+//		++(*beg);}
+//	return total;}
+//};
+
+// VERSI 3
+template<typename T, typename Traits = AccumulationTraits<T>>
+class SumPolicy{
+public:
+	typedef typename Traits::AccT AccT;
+	static AccT accumulate(AccT &total, T const* beg)
+	{return total+= *beg;}};
+
+// VERSI 3     Policy = SumPolicy<T, AccumulationTraits<T>>    // Policy is nested name specifier of SumPolicy<T, AccumulationTraits<T>>
+template <typename T, typename Policy = SumPolicy<T, AccumulationTraits<T>>, typename Traits = AccumulationTraits<T>>
+typename Traits::AccT accum(T * beg, const T* end)
+	{
+	typedef typename Traits::AccT AccT;
+	AccT total = Traits::zero();
+	while (*beg != *end){
+		Policy::accumulate(total, beg);
+		++(*beg);}
+	return total;}
+
+//INVALID!!!!!! for typename of class without nested_name_specifier
+//template <typename T, typename SumPolicy<T, AccumulationTraits<T>>, typename AccumulationTraits<T>>
+//typename Traits::AccT accum(T * beg, const T* end)
+//	{
+//	typedef typename AccumulationTraits<T>::AccT AccT;
+//	AccT total = AccumulationTraits<T>::zero();
+//	while (*beg != *end){
+//		SumPolicy<T, AccumulationTraits<T>::accumulate(total, *beg);
+//		++(*beg);}
+//	return total;}
+
+
+
+int main()
+{
+	cout<<"halo cak, test kalkulasi menggunakan template metaprogramming dlm C++ MODERN lewat Aplikasi Online SOLO LEARN\n";
+	double beg = 1;
+	double end = 50;
+//(1)	cout << Accum<double,SumPolicy,AccumulationTraits<float>>::accum (&beg, &end);
+//(2)	cout << Accum<double,SumPolicy<double, AccumulationTraits<float>>,AccumulationTraits<float>>::accum (&beg, &end);
+	cout << accum<double,SumPolicy<double, AccumulationTraits<float>>,AccumulationTraits<float>> (&beg, &end);
+	cout << endl << beg << "\t" << end << endl;
+
+	return 0;
+}

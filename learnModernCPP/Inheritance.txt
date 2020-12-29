@@ -1,0 +1,22 @@
+#include <memory>
+#include <iostream>
+
+struct Base {
+  virtual void do_thing() = 0;
+  Base() = default;
+  Base(const Base &) = default;
+  auto operator=(const Base &) -> Base & = default;
+  auto operator=(Base &&) -> Base & = default;
+  virtual ~Base() = default;
+  int data{};
+};
+
+struct Derived : Base {
+  void do_thing() override {}
+};
+
+auto main() -> int {
+  std::unique_ptr<Base> b = std::unique_ptr<Base>(new Derived());
+  b->do_thing();
+  return 0;
+}
