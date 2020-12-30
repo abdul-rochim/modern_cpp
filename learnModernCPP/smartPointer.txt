@@ -1,0 +1,99 @@
+#include <string>
+#include <iostream>
+#include <memory>
+
+class roti{
+public:
+	virtual void pesanRoti()=0;
+	virtual ~roti(){}
+};
+
+class rotiBakar{
+public:
+	std::string AddIngredient(){
+		return "Roti Bakar Rasanya Guriiiih\n\n";
+	}
+};
+
+class rotiKukus{
+public:
+	std::string AddIngredient(){
+		return "Roti Kukus lembut dan enaaak\n\n";
+	}
+};
+
+template<typename T>
+class rotiKeju : public T{
+public:
+	std::string AddIngredient(){
+		return "Kejunya tebal, " + T::AddIngredient();
+	}
+};
+
+template<typename T>
+class rotiCoklat : public T{
+public:
+	std::string AddIngredient(){
+		return "Rasa Coklatnya lumer, " + T::AddIngredient();
+	}
+};
+
+template<typename T>
+class rotiSurabaya : public T, public roti{
+public:
+	void pesanRoti(){
+		std::cout << "Roti Asli Surabaya : " <<
+				T::AddIngredient();
+	}
+};
+
+template<typename T>
+class rotiJogja : public T, public roti{
+public:
+	void pesanRoti(){
+		std::cout << "Roti made in Jogja : " <<
+				T::AddIngredient();
+	}
+};
+
+
+int main()
+{
+	// 1
+	vector<unique_ptr<roti>> pesan_roti;
+	pesan_roti.emplace_back(new rotiSurabaya<rotiCoklat<rotiKukus>>);
+	pesan_roti.emplace_back(new rotiJogja<rotiKeju<rotiBakar>>());
+	for(auto &roti: pesan_roti){
+		roti->pesanRoti();
+	}
+/*	cout << endl;
+	// 2
+	unique_ptr<roti> PESAN_roti (new rotiSurabaya<rotiCoklat<rotiKukus>>());
+	PESAN_roti->pesanRoti();
+	unique_ptr<roti> PESAN_ROTI (new rotiJogja<rotiKeju<rotiBakar>>);
+	PESAN_ROTI->pesanRoti();
+	cout << endl;
+	// 3
+	roti *rotiOrd;
+	rotiOrd = new rotiSurabaya<rotiCoklat<rotiKukus>>;
+	rotiOrd->pesanRoti();
+	delete rotiOrd;
+	rotiOrd = new rotiJogja<rotiKeju<rotiBakar>>();
+	rotiOrd->pesanRoti();
+	delete rotiOrd;
+	cout << endl;
+	// 4
+	rotiSurabaya<rotiCoklat<rotiKukus>> obj;
+	obj.pesanRoti();
+	rotiJogja<rotiKeju<rotiBakar>> OBJ;
+	OBJ.pesanRoti();
+*/
+	return 0;
+}
+
+
+
+
+
+
+
